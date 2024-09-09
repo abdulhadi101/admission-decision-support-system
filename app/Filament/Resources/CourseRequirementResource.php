@@ -23,7 +23,17 @@ class CourseRequirementResource extends Resource
     {
         return $form
             ->schema([
-                //
+                Forms\Components\TextInput::make('course_id')
+                    ->required()
+                    ->numeric(),
+                Forms\Components\TextInput::make('subject')
+                    ->required(),
+                Forms\Components\TextInput::make('minimum_grade')
+                    ->required(),
+                Forms\Components\TextInput::make('weight')
+                    ->required()
+                    ->numeric()
+                    ->default(1),
             ]);
     }
 
@@ -31,7 +41,24 @@ class CourseRequirementResource extends Resource
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('course_id')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('subject')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('minimum_grade')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('weight')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('updated_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 //

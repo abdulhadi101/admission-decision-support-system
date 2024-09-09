@@ -23,7 +23,17 @@ class CourseResource extends Resource
     {
         return $form
             ->schema([
-                //
+                Forms\Components\TextInput::make('name')
+                    ->required(),
+                Forms\Components\TextInput::make('jamb_weight')
+                    ->required()
+                    ->numeric(),
+                Forms\Components\TextInput::make('o_level_weight')
+                    ->required()
+                    ->numeric(),
+                Forms\Components\TextInput::make('interview_weight')
+                    ->required()
+                    ->numeric(),
             ]);
     }
 
@@ -31,7 +41,25 @@ class CourseResource extends Resource
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('name')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('jamb_weight')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('o_level_weight')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('interview_weight')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('updated_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 //

@@ -23,7 +23,15 @@ class ApplicantResource extends Resource
     {
         return $form
             ->schema([
-                //
+                Forms\Components\TextInput::make('user_id')
+                    ->required()
+                    ->numeric(),
+                Forms\Components\TextInput::make('jamb_score')
+                    ->numeric(),
+                Forms\Components\TextInput::make('course_id')
+                    ->numeric(),
+                Forms\Components\TextInput::make('saw_score')
+                    ->numeric(),
             ]);
     }
 
@@ -31,7 +39,26 @@ class ApplicantResource extends Resource
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('user_id')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('jamb_score')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('course_id')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('saw_score')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('updated_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 //
