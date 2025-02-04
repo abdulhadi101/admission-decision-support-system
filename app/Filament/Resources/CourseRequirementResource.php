@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\CourseRequirementResource\Pages;
 use App\Filament\Resources\CourseRequirementResource\RelationManagers;
+use App\Models\Course;
 use App\Models\CourseRequirement;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -23,9 +24,10 @@ class CourseRequirementResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('course_id')
-                    ->required()
-                    ->numeric(),
+                Forms\Components\Select::make('course_id')
+                    ->label('Course')
+                    ->options(Course::all()->pluck('name', 'id'))
+                    ->searchable(),
                 Forms\Components\TextInput::make('subject')
                     ->required(),
                 Forms\Components\TextInput::make('minimum_grade')

@@ -1,6 +1,6 @@
 <div>
 
-    @if($applicant->submitted)
+    @if($applicant->submitted ?? false)
 
         <div class="alert alert-info">
             Your application has been submitted and is waiting for approval.
