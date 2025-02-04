@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class CourseRequirement extends Model
 {
     use HasFactory;
-    protected $fillable = ['subject', 'minimum_grade', 'weight'];
+    protected $guarded = [];
 
     public function course()
     {

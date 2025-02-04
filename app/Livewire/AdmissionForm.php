@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use App\Models\Course;
 use App\Models\Applicant;
@@ -17,6 +18,7 @@ class AdmissionForm extends Component
     public $grades = [];
     public $examBoards = [];
     public $recommendations = [];
+
 
     protected $rules = [
         'jambScore' => 'required|numeric|min:0|max:400',
@@ -43,7 +45,7 @@ class AdmissionForm extends Component
         if ($applicant) {
             $this->jambScore = $applicant->jamb_score;
             $this->selectedCourse = $applicant->course_id;
-            
+
             foreach ($applicant->oLevelResults as $result) {
                 $this->subjects[] = $result->subject;
                 $this->grades[] = $result->grade;
@@ -73,31 +75,50 @@ class AdmissionForm extends Component
     {
         $this->validate();
 
-        $applicant = Auth::user()->applicant ?? new Applicant();
-        $applicant->user_id = Auth::id();
-        $applicant->jamb_score = $this->jambScore;
-        $applicant->course_id = $this->selectedCourse;
-        $applicant->save();
+        try {
+            DB::transaction(function () {
+                // Create or update the applicant
+                $applicant = Applicant::updateOrCreate(
+                    ['user_id' => Auth::id()],
+                    [
+                        'jamb_score' => $this->jambScore,
+                        'course_id' => $this->selectedCourse,
+                        'submitted ' => true,
+                    ]
+                );
 
-        // Delete existing O-level results and add new ones
-        $applicant->oLevelResults()->delete();
-        foreach ($this->subjects as $index => $subject) {
-            OlevelResult::create([
-                'applicant_id' => $applicant->id,
-                'subject' => $subject,
-                'grade' => $this->grades[$index],
-                'exam_board' => $this->examBoards[$index],
-            ]);
+                // Delete existing results first
+               OlevelResult::where('applicant_id', $applicant->id)->delete();
+
+                // Create new O-level results using the relationship
+                foreach ($this->subjects as $index => $subject) {
+
+                    if (!empty($subject) && !empty($this->grades[$index])) {
+
+                      OlevelResult::create([
+                            'applicant_id' => $applicant->id,
+                            'subject' => $subject,
+                            'grade' => $this->grades[$index],
+                            'exam_board' => $this->examBoards[$index],
+                        ]);
+                    }
+
+                }
+
+                $this->getRecommendations();
+            });
+
+            session()->flash('message', 'Application submitted successfully!');
+        } catch (\Exception $e) {
+            session()->flash('error', 'Error saving your application. Please try again.');
+            \Log::error('Application submission error: ' . $e->getMessage());
         }
-
-        $this->getRecommendations();
-
-        session()->flash('message', 'Application submitted successfully!');
     }
 
     public function getRecommendations()
     {
         $applicant = Auth::user()->applicant;
+
         if ($applicant && $applicant->jamb_score && count($applicant->oLevelResults) >= 5) {
             $this->recommendations = $this->recommendationService->getRecommendations($applicant);
         }
@@ -107,6 +128,8 @@ class AdmissionForm extends Component
     {
         return view('livewire.admission-form', [
             'courses' => Course::all(),
+            'applicant' => Applicant::where('user_id', Auth()->user()->id)->first(),
+
         ]);
     }
 }

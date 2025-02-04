@@ -8,12 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class Applicant extends Model
 {
     use HasFactory;
-    use HasFactory;
 
-    protected $fillable = [
-        'user_id',
-        'jamb_score',
-    ];
+    protected $guarded = [];
 
     public function user()
     {
@@ -24,8 +20,12 @@ class Applicant extends Model
     {
         return $this->belongsTo(Course::class);
     }
+    public function approvedCourse()
+    {
+        return $this->belongsTo(Course::class, 'approved_course_id');
+    }
 
-    public function oLevelResults()
+    public function level()
     {
         return $this->hasMany(OLevelResult::class);
     }

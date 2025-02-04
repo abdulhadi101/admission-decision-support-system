@@ -9,18 +9,16 @@ class Course extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'name',
-        'jamb_weight',
-        'o_level_weight',
-        'interview_weight',
-    ];
+    protected $guarded = [];
 
     public function applicants()
     {
         return $this->hasMany(Applicant::class);
     }
-
+    public function applicantsApproved()
+    {
+        return $this->hasMany(Applicant::class, 'approved_course_id');
+    }
     public function requirements()
     {
         return $this->hasMany(CourseRequirement::class);

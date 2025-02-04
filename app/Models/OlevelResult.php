@@ -9,8 +9,7 @@ class OlevelResult extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['subject', 'grade', 'exam_board'];
-
+    protected $guarded = [];
     public function applicant()
     {
         return $this->belongsTo(Applicant::class);
