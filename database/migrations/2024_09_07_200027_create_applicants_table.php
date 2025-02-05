@@ -17,7 +17,7 @@ return new class extends Migration
             $table->float('jamb_score')->nullable();
             $table->foreignId('course_id')->nullable()->constrained();
             $table->unsignedBigInteger('approved_course_id')->nullable();
-            $table->foreign('approved_course_id')->references('id')->on('courses')->onDelete('set null');
+            $table->foreign('approved_course_id')->references('id')->on('courses')->onDelete('cascade');
 
             $table->boolean('submitted')->default(false);
             $table->float('saw_score')->nullable();

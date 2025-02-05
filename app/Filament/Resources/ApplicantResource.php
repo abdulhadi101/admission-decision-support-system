@@ -50,6 +50,7 @@ class ApplicantResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('user.name')
+                    ->label('Applicant')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('jamb_score')

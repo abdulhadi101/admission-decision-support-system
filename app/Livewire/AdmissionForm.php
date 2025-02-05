@@ -77,16 +77,15 @@ class AdmissionForm extends Component
 
         try {
             DB::transaction(function () {
-                // Create or update the applicant
+                 // Create or update the applicant
                 $applicant = Applicant::updateOrCreate(
                     ['user_id' => Auth::id()],
                     [
                         'jamb_score' => $this->jambScore,
                         'course_id' => $this->selectedCourse,
-                        'submitted ' => true,
+                        'submitted' => true,
                     ]
                 );
-
                 // Delete existing results first
                OlevelResult::where('applicant_id', $applicant->id)->delete();
 

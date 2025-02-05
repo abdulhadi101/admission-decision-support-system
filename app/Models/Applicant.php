@@ -37,7 +37,7 @@ class Applicant extends Model
         return $this->belongsTo(Course::class, 'approved_course_id');
     }
 
-    public function level()
+    public function oLevelResults()
     {
         return $this->hasMany(OLevelResult::class);
     }
