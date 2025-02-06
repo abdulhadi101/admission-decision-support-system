@@ -14,11 +14,16 @@ class CourseRecommendationService
 
     public function getRecommendations(Applicant $applicant, $limit = 3)
     {
+       // $course_id = $applicant->course()->value('id');
+
         $courses = Course::with('requirements')->get();
 
         $recommendations = $courses->map(function ($course) use ($applicant) {
+
             $score = $this->calculateFitScore($applicant, $course);
+
             $meetsRequirements = $this->checkCourseRequirements($applicant, $course);
+
             return [
                 'course' => $course,
                 'score' => $score,
@@ -29,6 +34,11 @@ class CourseRecommendationService
               return $recommendation['meetsRequirements'];
           })
           ->take($limit);
+        if ($recommendations->isNotEmpty()){
+        $applicant->update(['approved_course_id' => $recommendations->first()['course']->id,
+            'saw_score' => $recommendations->first()['score'],
+        ]);
+        }
 
         return $recommendations;
     }
@@ -38,7 +48,7 @@ class CourseRecommendationService
         $jambScore = $this->normalizeJambScore($applicant->jamb_score);
         $oLevelScore = $this->calculateWeightedOLevelScore($applicant, $course);
 
-        $fitScore = 
+        $fitScore =
             ($jambScore * $course->jamb_weight) +
             ($oLevelScore * $course->o_level_weight);
 
@@ -77,8 +87,12 @@ class CourseRecommendationService
 
     private function checkCourseRequirements(Applicant $applicant, Course $course)
     {
+
         foreach ($course->requirements as $requirement) {
-            $result = $applicant->oLevelResults->firstWhere('subject', $requirement->subject);
+
+            $result = $applicant->oLevelResults->firstWhere('subject', ucfirst($requirement->subject));
+
+
             if (!$result || !$this->isGradeSufficient($result->grade, $requirement->minimum_grade)) {
                 return false;
             }

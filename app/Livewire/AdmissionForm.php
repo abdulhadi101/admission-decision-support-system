@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 use App\Models\Course;
 use App\Models\Applicant;
@@ -103,7 +104,7 @@ class AdmissionForm extends Component
                     }
 
                 }
-
+                Log::info('i am here 0');
                 $this->getRecommendations();
             });
 
@@ -116,9 +117,12 @@ class AdmissionForm extends Component
 
     public function getRecommendations()
     {
+        Log::info('i am here 1');
         $applicant = Auth::user()->applicant;
 
+        Log::info('i am here 2');
         if ($applicant && $applicant->jamb_score && count($applicant->oLevelResults) >= 5) {
+            Log::info('i am here 3');
             $this->recommendations = $this->recommendationService->getRecommendations($applicant);
         }
     }

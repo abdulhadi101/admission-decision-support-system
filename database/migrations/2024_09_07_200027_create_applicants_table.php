@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreignId('course_id')->nullable()->constrained();
             $table->unsignedBigInteger('approved_course_id')->nullable();
             $table->foreign('approved_course_id')->references('id')->on('courses')->onDelete('cascade');
+            $table->boolean('approved')->default(false);
 
             $table->boolean('submitted')->default(false);
             $table->float('saw_score')->nullable();

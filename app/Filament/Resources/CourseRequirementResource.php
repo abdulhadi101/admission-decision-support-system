@@ -28,14 +28,30 @@ class CourseRequirementResource extends Resource
                     ->label('Course')
                     ->options(Course::all()->pluck('name', 'id'))
                     ->searchable(),
-                Forms\Components\TextInput::make('subject')
+                Forms\Components\Select::make('subject')
+                    ->options([
+                        'english' => 'English',
+                        'mathematics' => 'Mathematics',
+                        'physics' => 'Physics',
+                        'chemistry' => 'Chemistry',
+                        'biology' => 'Biology',
+
+                    ])
                     ->required(),
-                Forms\Components\TextInput::make('minimum_grade')
+                Forms\Components\Select::make('minimum_grade')
+                    ->options([
+                        'A1' => 'A1',
+                        'B2' => 'B2',
+                        'B3' => 'B3',
+                        'C4' => 'C4',
+                        'C5' => 'C5',
+                        'C6' => 'C6',
+                        'D7' => 'D7',
+                        'E8' => 'E8',
+                        'F9' => 'F9',
+                    ])
                     ->required(),
-                Forms\Components\TextInput::make('weight')
-                    ->required()
-                    ->numeric()
-                    ->default(1),
+
             ]);
     }
 
@@ -43,7 +59,7 @@ class CourseRequirementResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('course_id')
+                Tables\Columns\TextColumn::make('course.name')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('subject')

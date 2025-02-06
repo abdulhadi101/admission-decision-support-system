@@ -6,6 +6,7 @@ use App\Filament\Resources\ApplicantResource\Pages;
 use App\Filament\Resources\ApplicantResource\RelationManagers;
 use App\Models\Applicant;
 use App\Models\Course;
+use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -24,24 +25,30 @@ class ApplicantResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('user_id')
-                    ->label('Applicant ID')
+                Forms\Components\Select::make('user_id')
+                    ->label('Applicant Name')
+                    ->options(User::all()->pluck('name', 'id'))
                     ->disabled()
                     ->dehydrated(false), // This ensures the field is not saved to the database
 
                 Forms\Components\TextInput::make('jamb_score')
                     ->disabled()
                     ->numeric(),
-                Forms\Components\TextInput::make('course_id')
-                    ->disabled()
-                    ->numeric(),
+                Forms\Components\Select::make('course_id')
+                    ->options(Course::all()->pluck('name', 'id'))
+                    ->disabled(),
+
                 Forms\Components\TextInput::make('saw_score')
                     ->disabled()
                     ->numeric(),
                 Forms\Components\Select::make('approved_course_id')
-                    ->label('Course')
+                    ->label('Recommended Course')
                     ->options(Course::all()->pluck('name', 'id'))
-                    ->searchable()
+                    ->searchable(),
+                 Forms\Components\Toggle::make('approved')
+                     ->label('Approve Recommendation')
+                ->inline(false)
+
             ]);
     }
 
